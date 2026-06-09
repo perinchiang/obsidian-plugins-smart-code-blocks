@@ -1,0 +1,243 @@
+/* ============================================================
+   Siyuan-style code block (editing + reading)
+   All colors come from theme variables, so dark / light mode
+   are handled automatically by the active theme.
+   Layout props use !important so they can't be collapsed.
+   ============================================================ */
+
+:root {
+  --siyuan-code-radius: 10px;
+  --siyuan-code-padding-left: 20px;
+}
+
+/* exact code-surface colour per mode (matches the code block body) */
+.theme-dark {
+  --siyuan-code-surface: #333433;
+}
+.theme-light {
+  --siyuan-code-surface: #e9e8e1;
+}
+
+/* ---- shared header bar (language pill + copy button) ---- */
+.siyuan-code-header {
+  display: flex !important;
+  flex-flow: row nowrap !important;
+  align-items: center !important;
+  gap: 8px !important;
+  height: 30px;
+  padding: 0 12px !important;
+  margin: 0;
+  box-sizing: border-box;
+  width: 100%;
+  font-family: var(--font-interface);
+  font-size: 12px;
+  line-height: 1;
+  color: var(--text-faint);
+  user-select: none;
+}
+
+/* language pill — hugs its text, never full width */
+.siyuan-code-header .siyuan-code-lang {
+  flex: 0 1 auto !important;
+  width: auto !important;
+  max-width: 70%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+  padding: 3px 8px;
+  border-radius: var(--radius-s, 4px);
+  background: transparent;
+  color: var(--text-muted);
+  transition: color 0.1s ease, background 0.1s ease;
+}
+.siyuan-code-header .siyuan-code-lang:hover {
+  color: var(--text-normal);
+  background: var(--background-modifier-hover);
+}
+
+/* copy button — pinned to the far right */
+.siyuan-code-header .siyuan-code-copy {
+  flex: 0 0 auto !important;
+  width: auto !important;
+  margin-left: auto !important;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: var(--radius-s, 4px);
+  color: var(--text-faint);
+  transition: color 0.1s ease, background 0.1s ease, opacity 0.15s ease;
+}
+.siyuan-code-header .siyuan-code-copy:hover {
+  color: var(--text-normal);
+  background: var(--background-modifier-hover);
+}
+.siyuan-code-header .siyuan-code-copy svg,
+.siyuan-code-header .siyuan-code-copy .svg-icon {
+  width: 14px !important;
+  height: 14px !important;
+}
+
+.siyuan-code-custom-hint {
+  color: var(--text-faint);
+  font-size: 0.85em;
+}
+
+/* ============================================================
+   Hover-to-show controls (language pill + copy button)
+   Default: hidden; shown on hover.
+   - Reading mode: <pre> hover works natively (header is inside pre)
+   - Editing mode: header is a separate CM6 widget, so CSS :hover
+     only triggers on the header itself. JS adds .siyuan-code-hover
+     to the header when the mouse is over any code-block line,
+     so the controls appear when hovering the entire code block.
+   ============================================================ */
+.siyuan-code-header .siyuan-code-copy,
+.siyuan-code-header .siyuan-code-lang {
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.siyuan-code-header:hover .siyuan-code-copy,
+.siyuan-code-header:hover .siyuan-code-lang,
+.siyuan-code-header.siyuan-code-hover .siyuan-code-copy,
+.siyuan-code-header.siyuan-code-hover .siyuan-code-lang {
+  opacity: 1;
+}
+.markdown-rendered pre .siyuan-code-copy,
+.markdown-rendered pre .siyuan-code-lang {
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.markdown-rendered pre:hover .siyuan-code-copy,
+.markdown-rendered pre:hover .siyuan-code-lang {
+  opacity: 1;
+}
+/* When hover setting is OFF, always show both */
+.siyuan-code-show-copy .siyuan-code-copy,
+.siyuan-code-show-copy .siyuan-code-lang {
+  opacity: 1 !important;
+}
+
+/* ============================================================
+   Mobile / touch device — controls are always visible,
+   tap targets are bigger, no cursor hover behaviour.
+   ============================================================ */
+.siyuan-code-is-mobile .siyuan-code-header {
+  padding-left: 12px !important;
+  padding-right: 12px !important;
+}
+.siyuan-code-is-mobile .siyuan-code-header .siyuan-code-lang,
+.siyuan-code-is-mobile .siyuan-code-header .siyuan-code-copy {
+  min-height: 32px;
+  min-width: 32px;
+  padding: 6px 10px;
+  opacity: 1 !important;
+}
+.siyuan-code-is-mobile .siyuan-code-header .siyuan-code-copy svg,
+.siyuan-code-is-mobile .siyuan-code-header .siyuan-code-copy .svg-icon {
+  width: 18px !important;
+  height: 18px !important;
+}
+
+/* Tap feedback instead of hover on touch devices */
+.siyuan-code-is-mobile .siyuan-code-header .siyuan-code-copy:active,
+.siyuan-code-is-mobile .siyuan-code-header .siyuan-code-lang:active {
+  background: var(--background-modifier-hover);
+}
+
+/* ============================================================
+   EDITING VIEW — one seamless bordered, rounded container.
+   Header colour == code colour, so the top blends in.
+   ============================================================ */
+.markdown-source-view.mod-cm6 .siyuan-code-header {
+  background: var(--siyuan-code-surface) !important;
+  border: 1px solid var(--background-modifier-border);
+  border-bottom: none;
+  border-radius: var(--siyuan-code-radius) var(--siyuan-code-radius) 0 0;
+}
+
+/* code body + side walls — forced to the exact surface colour so the
+   header blends in seamlessly */
+.markdown-source-view.mod-cm6 .HyperMD-codeblock {
+  background: var(--siyuan-code-surface) !important;
+  border-left: 1px solid var(--background-modifier-border);
+  border-right: 1px solid var(--background-modifier-border);
+  padding-left: var(--siyuan-code-padding-left) !important;
+}
+
+/* ---- Fence collapsing ---- */
+
+/* begin fence: collapsed (header already shows the language) */
+.markdown-source-view.mod-cm6 .HyperMD-codeblock-begin {
+  height: 0;
+  min-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  font-size: 0;
+  line-height: 0;
+  overflow: hidden;
+  border-left: none !important;
+  border-right: none !important;
+}
+
+/* end fence: collapsed into a thin rounded cap */
+.markdown-source-view.mod-cm6 .HyperMD-codeblock-end {
+  background: var(--siyuan-code-surface) !important;
+  height: 24px;
+  min-height: 24px;
+  padding-top: 0;
+  padding-bottom: 0;
+  font-size: 0;
+  line-height: 0;
+  overflow: hidden;
+  border-left: 1px solid var(--background-modifier-border);
+  border-right: 1px solid var(--background-modifier-border);
+  border-bottom: 1px solid var(--background-modifier-border);
+  border-radius: 0 0 var(--siyuan-code-radius) var(--siyuan-code-radius);
+}
+
+/* When NOT collapsed, ensure fence lines have the right background */
+.markdown-source-view.mod-cm6 .HyperMD-codeblock-begin,
+.markdown-source-view.mod-cm6 .HyperMD-codeblock-end {
+  background: var(--siyuan-code-surface) !important;
+}
+
+/* ============================================================
+   READING VIEW — let the <pre> be the container; the header is
+   positioned absolutely at the top so it blends in seamlessly.
+   We override the theme's border/shadow to match the editing view:
+   no side borders, no box-shadow, matching padding.
+   ============================================================ */
+.markdown-rendered pre {
+  position: relative;
+  background: var(--siyuan-code-surface) !important;
+  border: none !important;
+  border-radius: 0 0 var(--siyuan-code-radius) var(--siyuan-code-radius) !important;
+  box-shadow: none !important;
+  padding: 44px 0 0 0 !important;
+}
+.markdown-rendered pre > code {
+  display: block;
+  padding: 10px var(--siyuan-code-padding-left) 14px var(--siyuan-code-padding-left) !important;
+}
+.markdown-rendered pre > .siyuan-code-header-read {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 0 12px !important;
+  background: var(--siyuan-code-surface) !important;
+  border: 1px solid var(--background-modifier-border);
+  border-bottom: none;
+  border-radius: var(--siyuan-code-radius) var(--siyuan-code-radius) 0 0;
+}
+/* hide Obsidian's own reading-view copy button (we provide our own) */
+.markdown-rendered pre > .copy-code-button {
+  display: none !important;
+}
+/* hide Obsidian's own code-block language flair */
+.markdown-rendered pre .code-block-flair {
+  display: none !important;
+}
