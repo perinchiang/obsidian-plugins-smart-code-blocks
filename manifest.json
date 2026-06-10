@@ -1,10 +1,10 @@
 {
-  "id": "siyuan-code-blocks",
-  "name": "Siyuan-style Code Blocks",
-  "version": "1.1.0",
+  "id": "smart-code-blocks",
+  "name": "Smart Code Blocks",
+  "version": "1.2.0",
   "minAppVersion": "1.4.0",
-  "description": "Siyuan-like code blocks with a language pill (click-to-pick dropdown), hover copy button, smart Ctrl/Cmd+A, Chinese punctuation trigger (···→code block), customizable appearance, and bilingual UI (zh/en).",
+  "description": "Enhanced code blocks with a language pill (click-to-pick dropdown), hover copy button, smart Ctrl/Cmd+A, Chinese punctuation trigger (···→code block), customizable appearance, and bilingual UI (zh/en).",
   "author": "perinchiang",
-  "authorUrl": "https://github.com/perinchiang",
+  "authorUrl": "https://github.com/perinchiang/obsidian-plugins-smart-code-blocks",
   "isDesktopOnly": false
 }

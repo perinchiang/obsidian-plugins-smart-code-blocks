@@ -6,7 +6,7 @@
 
 ## English
 
-A Siyuan Note-style code block plugin for [Obsidian](https://obsidian.md).
+An enhanced code block plugin for [Obsidian](https://obsidian.md).
 
 Adds a sleek header bar to every code block with a language pill (click to pick / search / type custom), a copy button, and consistent styling across editing and reading modes.
 
@@ -18,6 +18,7 @@ Adds a sleek header bar to every code block with a language pill (click to pick 
 - **Chinese punctuation trigger** — Type `···` or `···python` then press Enter to create a code block fence.
 - **Backspace deletes empty blocks** — Press Backspace in an empty code block to remove the entire block.
 - **Collapsed fences** — ``` fence lines are hidden; only the header bar and code content are visible.
+- **Auto empty line** — New code blocks automatically get a blank body line so you can always press Backspace to delete.
 - **Customizable appearance** — Adjust border radius and left padding via sliders.
 - **Bilingual UI** — Switch between Chinese and English in settings.
 - **Mobile compatible** — Touch-optimized controls, always visible on mobile devices.
@@ -26,8 +27,8 @@ Adds a sleek header bar to every code block with a language pill (click to pick 
 
 #### From GitHub (manual)
 
-1. Download `main.js`, `styles.css`, and `manifest.json` from the [latest release](https://github.com/perinchiang/smart-code-blocks/releases).
-2. Create a folder named `siyuan-code-blocks` inside your vault's `.obsidian/plugins/` directory.
+1. Download `main.js`, `styles.css`, and `manifest.json` from the [latest release](https://github.com/perinchiang/obsidian-plugins-smart-code-blocks/releases).
+2. Create a folder named `smart-code-blocks` inside your vault's `.obsidian/plugins/` directory.
 3. Copy the three files into that folder.
 4. Enable the plugin in Obsidian → Settings → Community plugins.
 
@@ -55,7 +56,7 @@ Search for "Smart Code Blocks" in Obsidian's community plugin browser.
 
 ## 中文说明
 
-一款为 [Obsidian](https://obsidian.md) 带来思源笔记风格代码块的插件。
+一款为 [Obsidian](https://obsidian.md) 带来增强代码块体验的插件。
 
 为每个代码块添加精致的头部栏，包含语言标签（点击可选择 / 搜索 / 自定义输入）和复制按钮，编辑模式与阅读模式样式一致。
 
@@ -67,6 +68,7 @@ Search for "Smart Code Blocks" in Obsidian's community plugin browser.
 - **中文标点触发** — 输入 `···` 或 `···python` 后按回车，自动创建代码块围栏。
 - **Backspace 删除空代码块** — 在空代码块中按 Backspace 可删除整个代码块。
 - **围栏折叠** — 自动隐藏 ``` 围栏行，只显示头部栏和代码内容。
+- **自动空行** — 新建代码块自动插入空行，方便按 Backspace 删除。
 - **外观自定义** — 通过滑块调整圆角大小和左侧内边距。
 - **双语界面** — 在设置中切换中文/英文。
 - **移动端兼容** — 触控优化，控件在移动端始终可见。
@@ -75,8 +77,8 @@ Search for "Smart Code Blocks" in Obsidian's community plugin browser.
 
 #### 从 GitHub 手动安装
 
-1. 从 [最新发布](https://github.com/perinchiang/smart-code-blocks/releases) 下载 `main.js`、`styles.css` 和 `manifest.json`。
-2. 在你的仓库 `.obsidian/plugins/` 目录下创建 `siyuan-code-blocks` 文件夹。
+1. 从 [最新发布](https://github.com/perinchiang/obsidian-plugins-smart-code-blocks/releases) 下载 `main.js`、`styles.css` 和 `manifest.json`。
+2. 在你的仓库 `.obsidian/plugins/` 目录下创建 `smart-code-blocks` 文件夹。
 3. 将三个文件复制到该文件夹中。
 4. 在 Obsidian → 设置 → 第三方插件 中启用本插件。
 

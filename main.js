@@ -23,8 +23,8 @@ const DEFAULT_SETTINGS = {
 const i18n = {
   zh: {
     settings: {
-      title: "思源风格代码块",
-      subtitle: "为 Obsidian 代码块添加思源笔记风格的头部栏、语言选择器和复制按钮",
+      title: "Smart Code Blocks",
+      subtitle: "为 Obsidian 代码块添加语言选择器、复制按钮和增强功能",
       appearance: "外观设置",
       radius: "代码块圆角 (px)",
       radiusDesc: "控制代码块的圆角大小，默认 10px",
@@ -68,8 +68,8 @@ const i18n = {
   },
   en: {
     settings: {
-      title: "Siyuan-style Code Blocks",
-      subtitle: "Adds Siyuan-style header bar, language picker, and copy button to Obsidian code blocks",
+      title: "Smart Code Blocks",
+      subtitle: "Adds a language picker, copy button, and enhanced features to Obsidian code blocks",
       appearance: "Appearance",
       radius: "Code block radius (px)",
       radiusDesc: "Controls the border radius of code blocks, default 10px",
@@ -358,6 +358,57 @@ function createFenceTrigger(plugin) {
     return {
       changes: { from: replacement.from, to: replacement.to, insert: replacement.insert },
       selection: { anchor: replacement.from + replacement.insert.indexOf("\n") + 1 },
+    };
+  });
+}
+
+/* ============================================================
+   Ensure empty code blocks have a blank body line so the user
+   can place the cursor there and press Backspace to delete the
+   whole block (since fence lines are hidden by CSS).
+   When a new code block appears with begin +1 === end (no body),
+   we insert a newline between them.
+   ============================================================ */
+function createEnsureEmptyLine() {
+  return EditorState.transactionFilter.of((tr) => {
+    if (!tr.docChanged) return tr;
+
+    const newDoc = tr.state.doc;
+    const blocks = parseFences(newDoc);
+    let insertion = null;
+
+    for (const b of blocks) {
+      // Only care about blocks with no body: begin+1 === end
+      if (b.endLineNo - b.beginLineNo !== 1) continue;
+
+      // Check if this block already existed in the old doc (skip if so)
+      const oldDoc = tr.startState.doc;
+      const oldBlocks = parseFences(oldDoc);
+      const existed = oldBlocks.some(
+        (ob) => ob.beginLineNo === b.beginLineNo && ob.endLineNo === b.endLineNo
+      );
+      if (existed) continue;
+
+      // Insert a blank line between begin and end
+      const endLine = newDoc.line(b.endLineNo);
+      insertion = {
+        from: endLine.from,
+        to: endLine.from,
+        insert: "\n",
+      };
+      // Adjust selection to the new empty line
+      break;
+    }
+
+    if (!insertion) return tr;
+
+    const sel = tr.selection
+      ? { anchor: insertion.from + 1 }
+      : undefined;
+
+    return {
+      changes: insertion,
+      selection: sel,
     };
   });
 }
@@ -655,6 +706,7 @@ module.exports = class SiyuanCodeBlocks extends Plugin {
     this.registerEditorExtension([
       headerField,
       createFenceTrigger(plugin),
+      createEnsureEmptyLine(),
       Prec.highest(smartSelectAllKeydown),
       Prec.highest(keymap.of([
         { key: "Mod-a", run: selectCurrentCodeBlockBody },

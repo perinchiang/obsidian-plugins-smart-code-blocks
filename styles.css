@@ -220,6 +220,7 @@
 }
 .markdown-rendered pre > code {
   display: block;
+  border: none !important;
   padding: 10px var(--siyuan-code-padding-left) 14px var(--siyuan-code-padding-left) !important;
 }
 .markdown-rendered pre > .siyuan-code-header-read {
@@ -229,7 +230,7 @@
   right: 0;
   padding: 0 12px !important;
   background: var(--siyuan-code-surface) !important;
-  border: 1px solid var(--background-modifier-border);
+  border-top: 1px solid var(--background-modifier-border);
   border-bottom: none;
   border-radius: var(--siyuan-code-radius) var(--siyuan-code-radius) 0 0;
 }
