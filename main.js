@@ -8,6 +8,7 @@ const { StateField, RangeSetBuilder, Prec, EditorState } = require("@codemirror/
    Default settings
    ============================================================ */
 const DEFAULT_SETTINGS = {
+  customStyle: false,
   codeBlockRadius: 10,
   codeBlockPaddingLeft: 20,
   copyButtonOnHover: true,
@@ -26,6 +27,8 @@ const i18n = {
       title: "Smart Code Blocks",
       subtitle: "为 Obsidian 代码块添加语言选择器、复制按钮和增强功能",
       appearance: "外观设置",
+      customStyle: "自定义外观",
+      customStyleDesc: "开启后可自定义代码块背景色、圆角和内边距（关闭则使用 Obsidian 原生样式）",
       radius: "代码块圆角 (px)",
       radiusDesc: "控制代码块的圆角大小，默认 10px",
       paddingLeft: "代码内容左侧内边距 (px)",
@@ -71,6 +74,8 @@ const i18n = {
       title: "Smart Code Blocks",
       subtitle: "Adds a language picker, copy button, and enhanced features to Obsidian code blocks",
       appearance: "Appearance",
+      customStyle: "Custom appearance",
+      customStyleDesc: "Enable to customize code block background, radius, and padding (disable to use Obsidian's native style)",
       radius: "Code block radius (px)",
       radiusDesc: "Controls the border radius of code blocks, default 10px",
       paddingLeft: "Left padding of code content (px)",
@@ -440,34 +445,50 @@ class SiyuanSettingTab extends PluginSettingTab {
     containerEl.createEl("h3", { text: t.settings.appearance });
 
     new Setting(containerEl)
-      .setName(t.settings.radius)
-      .setDesc(t.settings.radiusDesc)
-      .addSlider((slider) =>
-        slider
-          .setLimits(0, 24, 1)
-          .setValue(this.plugin.settings.codeBlockRadius)
-          .setDynamicTooltip()
+      .setName(t.settings.customStyle)
+      .setDesc(t.settings.customStyleDesc)
+      .addToggle((toggle) =>
+        toggle
+          .setValue(this.plugin.settings.customStyle)
           .onChange(async (value) => {
-            this.plugin.settings.codeBlockRadius = value;
+            this.plugin.settings.customStyle = value;
             this.plugin.applySettings();
             await this.plugin.saveSettings();
+            this.display(); // refresh to show/hide sliders
           })
       );
 
-    new Setting(containerEl)
-      .setName(t.settings.paddingLeft)
-      .setDesc(t.settings.paddingLeftDesc)
-      .addSlider((slider) =>
-        slider
-          .setLimits(8, 40, 1)
-          .setValue(this.plugin.settings.codeBlockPaddingLeft)
-          .setDynamicTooltip()
-          .onChange(async (value) => {
-            this.plugin.settings.codeBlockPaddingLeft = value;
-            this.plugin.applySettings();
-            await this.plugin.saveSettings();
-          })
-      );
+    if (this.plugin.settings.customStyle) {
+      new Setting(containerEl)
+        .setName(t.settings.radius)
+        .setDesc(t.settings.radiusDesc)
+        .addSlider((slider) =>
+          slider
+            .setLimits(0, 24, 1)
+            .setValue(this.plugin.settings.codeBlockRadius)
+            .setDynamicTooltip()
+            .onChange(async (value) => {
+              this.plugin.settings.codeBlockRadius = value;
+              this.plugin.applySettings();
+              await this.plugin.saveSettings();
+            })
+        );
+
+      new Setting(containerEl)
+        .setName(t.settings.paddingLeft)
+        .setDesc(t.settings.paddingLeftDesc)
+        .addSlider((slider) =>
+          slider
+            .setLimits(8, 40, 1)
+            .setValue(this.plugin.settings.codeBlockPaddingLeft)
+            .setDynamicTooltip()
+            .onChange(async (value) => {
+              this.plugin.settings.codeBlockPaddingLeft = value;
+              this.plugin.applySettings();
+              await this.plugin.saveSettings();
+            })
+        );
+    }
 
     // --- Behavior ---
     containerEl.createEl("h3", { text: t.settings.behavior });
@@ -808,6 +829,7 @@ module.exports = class SiyuanCodeBlocks extends Plugin {
     document.documentElement.style.removeProperty("--siyuan-code-padding-left");
     document.body.classList.remove("siyuan-code-show-copy");
     document.body.classList.remove("siyuan-code-is-mobile");
+    document.body.classList.remove("siyuan-code-custom-style");
     document.querySelectorAll(".siyuan-code-hover").forEach((el) => {
       el.classList.remove("siyuan-code-hover");
     });
@@ -829,6 +851,11 @@ module.exports = class SiyuanCodeBlocks extends Plugin {
     document.documentElement.style.setProperty(
       "--siyuan-code-padding-left",
       this.settings.codeBlockPaddingLeft + "px"
+    );
+    // Toggle custom style body class
+    document.body.classList.toggle(
+      "siyuan-code-custom-style",
+      this.settings.customStyle
     );
     // Always show copy button on mobile (no cursor hover)
     const mobile = isMobilePlatform();

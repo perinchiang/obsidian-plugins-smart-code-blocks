@@ -1,21 +1,13 @@
 /* ============================================================
-   Siyuan-style code block (editing + reading)
-   All colors come from theme variables, so dark / light mode
-   are handled automatically by the active theme.
-   Layout props use !important so they can't be collapsed.
+   Smart Code Blocks (editing + reading)
+   - Default: respects Obsidian's native code block style
+   - Custom style: activated via .siyuan-code-custom-style body class
    ============================================================ */
 
 :root {
   --siyuan-code-radius: 10px;
   --siyuan-code-padding-left: 20px;
-}
-
-/* exact code-surface colour per mode (matches the code block body) */
-.theme-dark {
-  --siyuan-code-surface: #333433;
-}
-.theme-light {
-  --siyuan-code-surface: #e9e8e1;
+  --siyuan-code-surface: var(--code-background);
 }
 
 /* ---- shared header bar (language pill + copy button) ---- */
@@ -88,11 +80,6 @@
 /* ============================================================
    Hover-to-show controls (language pill + copy button)
    Default: hidden; shown on hover.
-   - Reading mode: <pre> hover works natively (header is inside pre)
-   - Editing mode: header is a separate CM6 widget, so CSS :hover
-     only triggers on the header itself. JS adds .siyuan-code-hover
-     to the header when the mouse is over any code-block line,
-     so the controls appear when hovering the entire code block.
    ============================================================ */
 .siyuan-code-header .siyuan-code-copy,
 .siyuan-code-header .siyuan-code-lang {
@@ -148,26 +135,15 @@
 }
 
 /* ============================================================
-   EDITING VIEW — one seamless bordered, rounded container.
-   Header colour == code colour, so the top blends in.
+   EDITING VIEW — fence collapsing (always active)
+   Header sits above the code block as a CM6 block widget.
    ============================================================ */
+
+/* Default header style: transparent, no border — blends with native code block */
 .markdown-source-view.mod-cm6 .siyuan-code-header {
-  background: var(--siyuan-code-surface) !important;
-  border: 1px solid var(--background-modifier-border);
-  border-bottom: none;
+  background: var(--code-background) !important;
   border-radius: var(--siyuan-code-radius) var(--siyuan-code-radius) 0 0;
 }
-
-/* code body + side walls — forced to the exact surface colour so the
-   header blends in seamlessly */
-.markdown-source-view.mod-cm6 .HyperMD-codeblock {
-  background: var(--siyuan-code-surface) !important;
-  border-left: 1px solid var(--background-modifier-border);
-  border-right: 1px solid var(--background-modifier-border);
-  padding-left: var(--siyuan-code-padding-left) !important;
-}
-
-/* ---- Fence collapsing ---- */
 
 /* begin fence: collapsed (header already shows the language) */
 .markdown-source-view.mod-cm6 .HyperMD-codeblock-begin {
@@ -178,13 +154,11 @@
   font-size: 0;
   line-height: 0;
   overflow: hidden;
-  border-left: none !important;
-  border-right: none !important;
 }
 
 /* end fence: collapsed into a thin rounded cap */
 .markdown-source-view.mod-cm6 .HyperMD-codeblock-end {
-  background: var(--siyuan-code-surface) !important;
+  background: var(--code-background) !important;
   height: 24px;
   min-height: 24px;
   padding-top: 0;
@@ -192,36 +166,26 @@
   font-size: 0;
   line-height: 0;
   overflow: hidden;
-  border-left: 1px solid var(--background-modifier-border);
-  border-right: 1px solid var(--background-modifier-border);
-  border-bottom: 1px solid var(--background-modifier-border);
   border-radius: 0 0 var(--siyuan-code-radius) var(--siyuan-code-radius);
 }
 
-/* When NOT collapsed, ensure fence lines have the right background */
+/* Ensure fence lines have the right background */
 .markdown-source-view.mod-cm6 .HyperMD-codeblock-begin,
 .markdown-source-view.mod-cm6 .HyperMD-codeblock-end {
-  background: var(--siyuan-code-surface) !important;
+  background: var(--code-background) !important;
 }
 
 /* ============================================================
-   READING VIEW — let the <pre> be the container; the header is
-   positioned absolutely at the top so it blends in seamlessly.
-   We override the theme's border/shadow to match the editing view:
-   no side borders, no box-shadow, matching padding.
+   READING VIEW — header positioned at top of <pre>
+   Default: respect Obsidian's native <pre> styling.
    ============================================================ */
 .markdown-rendered pre {
   position: relative;
-  background: var(--siyuan-code-surface) !important;
-  border: none !important;
-  border-radius: 0 0 var(--siyuan-code-radius) var(--siyuan-code-radius) !important;
-  box-shadow: none !important;
-  padding: 44px 0 0 0 !important;
+  padding-top: 36px !important;
 }
 .markdown-rendered pre > code {
   display: block;
   border: none !important;
-  padding: 10px var(--siyuan-code-padding-left) 14px var(--siyuan-code-padding-left) !important;
 }
 .markdown-rendered pre > .siyuan-code-header-read {
   position: absolute;
@@ -229,9 +193,7 @@
   left: 0;
   right: 0;
   padding: 0 12px !important;
-  background: var(--siyuan-code-surface) !important;
-  border-top: 1px solid var(--background-modifier-border);
-  border-bottom: none;
+  background: var(--code-background) !important;
   border-radius: var(--siyuan-code-radius) var(--siyuan-code-radius) 0 0;
 }
 /* hide Obsidian's own reading-view copy button (we provide our own) */
@@ -241,4 +203,54 @@
 /* hide Obsidian's own code-block language flair */
 .markdown-rendered pre .code-block-flair {
   display: none !important;
+}
+
+/* ============================================================
+   CUSTOM STYLE — only active when .siyuan-code-custom-style is
+   on the body (user toggled "Custom appearance" in settings).
+   Overrides Obsidian's native code block appearance.
+   ============================================================ */
+
+/* Editing view: custom background, borders, padding */
+.siyuan-code-custom-style .markdown-source-view.mod-cm6 .siyuan-code-header {
+  background: var(--siyuan-code-surface) !important;
+  border: 1px solid var(--background-modifier-border);
+  border-bottom: none;
+  border-radius: var(--siyuan-code-radius) var(--siyuan-code-radius) 0 0;
+}
+.siyuan-code-custom-style .markdown-source-view.mod-cm6 .HyperMD-codeblock {
+  background: var(--siyuan-code-surface) !important;
+  border-left: 1px solid var(--background-modifier-border);
+  border-right: 1px solid var(--background-modifier-border);
+  padding-left: var(--siyuan-code-padding-left) !important;
+}
+.siyuan-code-custom-style .markdown-source-view.mod-cm6 .HyperMD-codeblock-begin {
+  border-left: none !important;
+  border-right: none !important;
+}
+.siyuan-code-custom-style .markdown-source-view.mod-cm6 .HyperMD-codeblock-end {
+  background: var(--siyuan-code-surface) !important;
+  border-left: 1px solid var(--background-modifier-border);
+  border-right: 1px solid var(--background-modifier-border);
+  border-bottom: 1px solid var(--background-modifier-border);
+}
+.siyuan-code-custom-style .markdown-source-view.mod-cm6 .HyperMD-codeblock-begin,
+.siyuan-code-custom-style .markdown-source-view.mod-cm6 .HyperMD-codeblock-end {
+  background: var(--siyuan-code-surface) !important;
+}
+
+/* Reading view: custom background, borders, padding */
+.siyuan-code-custom-style .markdown-rendered pre {
+  background: var(--siyuan-code-surface) !important;
+  border: none !important;
+  border-radius: 0 0 var(--siyuan-code-radius) var(--siyuan-code-radius) !important;
+  box-shadow: none !important;
+}
+.siyuan-code-custom-style .markdown-rendered pre > code {
+  padding: 10px var(--siyuan-code-padding-left) 14px var(--siyuan-code-padding-left) !important;
+}
+.siyuan-code-custom-style .markdown-rendered pre > .siyuan-code-header-read {
+  background: var(--siyuan-code-surface) !important;
+  border-top: 1px solid var(--background-modifier-border);
+  border-bottom: none;
 }
