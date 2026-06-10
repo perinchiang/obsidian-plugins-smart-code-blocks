@@ -175,6 +175,13 @@
   background: var(--code-background) !important;
 }
 
+/* Hide Obsidian's native code-block controls in editing mode
+   (we provide our own via the header widget) */
+.markdown-source-view.mod-cm6 .code-block-flair,
+.markdown-source-view.mod-cm6 .copy-code-button {
+  display: none !important;
+}
+
 /* ============================================================
    READING VIEW — header positioned at top of <pre>
    Default: respect Obsidian's native <pre> styling.
@@ -182,10 +189,15 @@
 .markdown-rendered pre {
   position: relative;
   padding-top: 36px !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
 }
 .markdown-rendered pre > code {
   display: block;
   border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
 .markdown-rendered pre > .siyuan-code-header-read {
   position: absolute;
@@ -242,12 +254,17 @@
 /* Reading view: custom background, borders, padding */
 .siyuan-code-custom-style .markdown-rendered pre {
   background: var(--siyuan-code-surface) !important;
-  border: none !important;
+  border-left: 1px solid var(--background-modifier-border) !important;
+  border-right: 1px solid var(--background-modifier-border) !important;
+  border-bottom: 1px solid var(--background-modifier-border) !important;
+  border-top: none !important;
   border-radius: 0 0 var(--siyuan-code-radius) var(--siyuan-code-radius) !important;
   box-shadow: none !important;
+  outline: none !important;
 }
 .siyuan-code-custom-style .markdown-rendered pre > code {
   padding: 10px var(--siyuan-code-padding-left) 14px var(--siyuan-code-padding-left) !important;
+  outline: none !important;
 }
 .siyuan-code-custom-style .markdown-rendered pre > .siyuan-code-header-read {
   background: var(--siyuan-code-surface) !important;
