@@ -24,7 +24,7 @@ const DEFAULT_SETTINGS = {
 const i18n = {
   zh: {
     settings: {
-      title: "Smart Code Blocks",
+      title: "Code Block Plus",
       subtitle: "为 Obsidian 代码块添加语言选择器、复制按钮和增强功能",
       appearance: "外观设置",
       customStyle: "自定义外观",
@@ -71,7 +71,7 @@ const i18n = {
   },
   en: {
     settings: {
-      title: "Smart Code Blocks",
+      title: "Code Block Plus",
       subtitle: "Adds a language picker, copy button, and enhanced features to Obsidian code blocks",
       appearance: "Appearance",
       customStyle: "Custom appearance",
