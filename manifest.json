@@ -1,7 +1,7 @@
 {
   "id": "siyuan-code-blocks",
   "name": "Code Block Plus",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "minAppVersion": "1.4.0",
   "description": "Enhanced code blocks with a language pill (click-to-pick dropdown), hover copy button, smart Ctrl/Cmd+A, Chinese punctuation trigger (···→code block), customizable appearance, and bilingual UI (zh/en).",
   "author": "perinchiang",

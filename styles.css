@@ -1,7 +1,10 @@
 /* ============================================================
-   Smart Code Blocks (editing + reading)
+   Code Block Plus (editing + reading)
    - Default: respects Obsidian's native code block style
-   - Custom style: activated via .siyuan-code-custom-style body class
+   - Custom styles: activated via independent body classes
+     .siyuan-code-custom-bg     → custom background + borders
+     .siyuan-code-custom-radius → custom border-radius
+     .siyuan-code-custom-padding → custom left padding
    ============================================================ */
 
 :root {
@@ -137,12 +140,12 @@
 /* ============================================================
    EDITING VIEW — fence collapsing (always active)
    Header sits above the code block as a CM6 block widget.
+   Default: native Obsidian style (no border-radius override).
    ============================================================ */
 
-/* Default header style: transparent, no border — blends with native code block */
+/* Default header style: matches native code block background */
 .markdown-source-view.mod-cm6 .siyuan-code-header {
   background: var(--code-background) !important;
-  border-radius: var(--siyuan-code-radius) var(--siyuan-code-radius) 0 0;
 }
 
 /* begin fence: collapsed (header already shows the language) */
@@ -156,7 +159,7 @@
   overflow: hidden;
 }
 
-/* end fence: collapsed into a thin rounded cap */
+/* end fence: collapsed into a thin cap */
 .markdown-source-view.mod-cm6 .HyperMD-codeblock-end {
   background: var(--code-background) !important;
   height: 24px;
@@ -166,7 +169,6 @@
   font-size: 0;
   line-height: 0;
   overflow: hidden;
-  border-radius: 0 0 var(--siyuan-code-radius) var(--siyuan-code-radius);
 }
 
 /* Ensure fence lines have the right background */
@@ -189,15 +191,9 @@
 .markdown-rendered pre {
   position: relative;
   padding-top: 36px !important;
-  border: none !important;
-  box-shadow: none !important;
-  outline: none !important;
 }
 .markdown-rendered pre > code {
   display: block;
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
 }
 .markdown-rendered pre > .siyuan-code-header-read {
   position: absolute;
@@ -206,7 +202,6 @@
   right: 0;
   padding: 0 12px !important;
   background: var(--code-background) !important;
-  border-radius: var(--siyuan-code-radius) var(--siyuan-code-radius) 0 0;
 }
 /* hide Obsidian's own reading-view copy button (we provide our own) */
 .markdown-rendered pre > .copy-code-button {
@@ -218,56 +213,101 @@
 }
 
 /* ============================================================
-   CUSTOM STYLE — only active when .siyuan-code-custom-style is
-   on the body (user toggled "Custom appearance" in settings).
-   Overrides Obsidian's native code block appearance.
+   CUSTOM BACKGROUND — .siyuan-code-custom-bg
+   Overrides background color and adds borders.
    ============================================================ */
 
-/* Editing view: custom background, borders, padding */
-.siyuan-code-custom-style .markdown-source-view.mod-cm6 .siyuan-code-header {
+/* Editing view */
+.siyuan-code-custom-bg .markdown-source-view.mod-cm6 .siyuan-code-header {
   background: var(--siyuan-code-surface) !important;
   border: 1px solid var(--background-modifier-border);
-  border-bottom: none;
-  border-radius: var(--siyuan-code-radius) var(--siyuan-code-radius) 0 0;
 }
-.siyuan-code-custom-style .markdown-source-view.mod-cm6 .HyperMD-codeblock {
+.siyuan-code-custom-bg .markdown-source-view.mod-cm6 .HyperMD-codeblock {
   background: var(--siyuan-code-surface) !important;
   border-left: 1px solid var(--background-modifier-border);
   border-right: 1px solid var(--background-modifier-border);
-  padding-left: var(--siyuan-code-padding-left) !important;
 }
-.siyuan-code-custom-style .markdown-source-view.mod-cm6 .HyperMD-codeblock-begin {
+.siyuan-code-custom-bg .markdown-source-view.mod-cm6 .HyperMD-codeblock-begin {
   border-left: none !important;
   border-right: none !important;
 }
-.siyuan-code-custom-style .markdown-source-view.mod-cm6 .HyperMD-codeblock-end {
+.siyuan-code-custom-bg .markdown-source-view.mod-cm6 .HyperMD-codeblock-end {
   background: var(--siyuan-code-surface) !important;
   border-left: 1px solid var(--background-modifier-border);
   border-right: 1px solid var(--background-modifier-border);
   border-bottom: 1px solid var(--background-modifier-border);
 }
-.siyuan-code-custom-style .markdown-source-view.mod-cm6 .HyperMD-codeblock-begin,
-.siyuan-code-custom-style .markdown-source-view.mod-cm6 .HyperMD-codeblock-end {
+.siyuan-code-custom-bg .markdown-source-view.mod-cm6 .HyperMD-codeblock-begin,
+.siyuan-code-custom-bg .markdown-source-view.mod-cm6 .HyperMD-codeblock-end {
   background: var(--siyuan-code-surface) !important;
 }
 
-/* Reading view: custom background, borders, padding */
-.siyuan-code-custom-style .markdown-rendered pre {
+/* Reading view */
+.siyuan-code-custom-bg .markdown-rendered pre {
   background: var(--siyuan-code-surface) !important;
   border-left: 1px solid var(--background-modifier-border) !important;
   border-right: 1px solid var(--background-modifier-border) !important;
   border-bottom: 1px solid var(--background-modifier-border) !important;
   border-top: none !important;
-  border-radius: 0 0 var(--siyuan-code-radius) var(--siyuan-code-radius) !important;
   box-shadow: none !important;
   outline: none !important;
 }
-.siyuan-code-custom-style .markdown-rendered pre > code {
-  padding: 10px var(--siyuan-code-padding-left) 14px var(--siyuan-code-padding-left) !important;
+.siyuan-code-custom-bg .markdown-rendered pre > code {
   outline: none !important;
 }
-.siyuan-code-custom-style .markdown-rendered pre > .siyuan-code-header-read {
+.siyuan-code-custom-bg .markdown-rendered pre > .siyuan-code-header-read {
   background: var(--siyuan-code-surface) !important;
   border-top: 1px solid var(--background-modifier-border);
-  border-bottom: none;
+  border-bottom: 1px solid var(--background-modifier-border);
+}
+
+/* ============================================================
+   CUSTOM RADIUS — .siyuan-code-custom-radius
+   Overrides border-radius with slider-controlled value.
+   ============================================================ */
+
+/* Editing view */
+.siyuan-code-custom-radius .markdown-source-view.mod-cm6 .siyuan-code-header {
+  border-radius: var(--siyuan-code-radius) var(--siyuan-code-radius) 0 0;
+}
+.siyuan-code-custom-radius .markdown-source-view.mod-cm6 .HyperMD-codeblock-end {
+  border-radius: 0 0 var(--siyuan-code-radius) var(--siyuan-code-radius);
+}
+
+/* Reading view */
+.siyuan-code-custom-radius .markdown-rendered pre {
+  border-radius: 0 0 var(--siyuan-code-radius) var(--siyuan-code-radius) !important;
+}
+.siyuan-code-custom-radius .markdown-rendered pre > .siyuan-code-header-read {
+  border-radius: var(--siyuan-code-radius) var(--siyuan-code-radius) 0 0;
+}
+
+/* ============================================================
+   CUSTOM PADDING — .siyuan-code-custom-padding
+   Overrides left padding with slider-controlled value.
+   ============================================================ */
+
+/* Editing view */
+.siyuan-code-custom-padding .markdown-source-view.mod-cm6 .HyperMD-codeblock {
+  padding-left: var(--siyuan-code-padding-left) !important;
+}
+
+/* Reading view */
+.siyuan-code-custom-padding .markdown-rendered pre > code {
+  padding: 10px var(--siyuan-code-padding-left) 14px var(--siyuan-code-padding-left) !important;
+}
+
+/* ============================================================
+   HIDE HEADER SEPARATOR — .siyuan-code-hide-header-separator
+   Removes the separator line between the header bar and code content.
+   ============================================================ */
+
+/* Editing view: remove header border-bottom */
+.siyuan-code-hide-header-separator .markdown-source-view.mod-cm6 .siyuan-code-header {
+  border-bottom: none !important;
+}
+
+/* Reading view: remove header-read border-bottom */
+.siyuan-code-hide-header-separator .markdown-rendered pre > .siyuan-code-header-read {
+  border-bottom: none !important;
 }
