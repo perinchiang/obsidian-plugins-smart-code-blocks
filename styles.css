@@ -10,6 +10,7 @@
 :root {
   --siyuan-code-radius: 10px;
   --siyuan-code-padding-left: 20px;
+  --siyuan-code-padding-right: 20px;
   --siyuan-code-surface: var(--code-background);
 }
 
@@ -221,6 +222,7 @@
 .siyuan-code-custom-bg .markdown-source-view.mod-cm6 .siyuan-code-header {
   background: var(--siyuan-code-surface) !important;
   border: 1px solid var(--background-modifier-border);
+  border-bottom: none;
 }
 .siyuan-code-custom-bg .markdown-source-view.mod-cm6 .HyperMD-codeblock {
   background: var(--siyuan-code-surface) !important;
@@ -258,7 +260,6 @@
 .siyuan-code-custom-bg .markdown-rendered pre > .siyuan-code-header-read {
   background: var(--siyuan-code-surface) !important;
   border-top: 1px solid var(--background-modifier-border);
-  border-bottom: 1px solid var(--background-modifier-border);
 }
 
 /* ============================================================
@@ -284,30 +285,487 @@
 
 /* ============================================================
    CUSTOM PADDING — .siyuan-code-custom-padding
-   Overrides left padding with slider-controlled value.
+   Overrides left and right padding with slider-controlled values.
    ============================================================ */
 
 /* Editing view */
 .siyuan-code-custom-padding .markdown-source-view.mod-cm6 .HyperMD-codeblock {
   padding-left: var(--siyuan-code-padding-left) !important;
+  padding-right: var(--siyuan-code-padding-right) !important;
 }
 
 /* Reading view */
 .siyuan-code-custom-padding .markdown-rendered pre > code {
-  padding: 10px var(--siyuan-code-padding-left) 14px var(--siyuan-code-padding-left) !important;
+  padding: 10px var(--siyuan-code-padding-right) 14px var(--siyuan-code-padding-left) !important;
 }
 
 /* ============================================================
-   HIDE HEADER SEPARATOR — .siyuan-code-hide-header-separator
-   Removes the separator line between the header bar and code content.
+   SHOW HEADER SEPARATOR — .siyuan-code-show-header-separator
+   Adds a separator line between the header bar and code content.
    ============================================================ */
 
-/* Editing view: remove header border-bottom */
-.siyuan-code-hide-header-separator .markdown-source-view.mod-cm6 .siyuan-code-header {
-  border-bottom: none !important;
+/* Editing view: add header border-bottom */
+.siyuan-code-show-header-separator .markdown-source-view.mod-cm6 .siyuan-code-header {
+  border-bottom: 1px solid var(--background-modifier-border) !important;
 }
 
-/* Reading view: remove header-read border-bottom */
-.siyuan-code-hide-header-separator .markdown-rendered pre > .siyuan-code-header-read {
+/* Reading view: add header-read border-bottom */
+.siyuan-code-show-header-separator .markdown-rendered pre > .siyuan-code-header-read {
+  border-bottom: 1px solid var(--background-modifier-border) !important;
+}
+
+/* ============================================================
+   PRESET: Mac Traffic Lights — .siyuan-code-preset-mac
+   macOS terminal-style code block with red/yellow/green dots.
+   ============================================================ */
+
+/* --- Mac: CSS variables --- */
+.siyuan-code-preset-mac {
+  --siyuan-code-mac-bg: #1e1e2e;
+  --siyuan-code-mac-header-bg: #2a2a3c;
+  --siyuan-code-mac-dot-close: #ff5f57;
+  --siyuan-code-mac-dot-minimize: #febc2e;
+  --siyuan-code-mac-dot-maximize: #28c840;
+}
+
+/* --- Mac: Editing view --- */
+.siyuan-code-preset-mac .markdown-source-view.mod-cm6 .siyuan-code-header {
+  background: var(--siyuan-code-mac-header-bg) !important;
+  border: none !important;
+  border-radius: 12px 12px 0 0;
+  height: 36px;
+  padding-left: 16px !important;
+  position: relative;
+}
+/* Mac dots via ::before on header */
+.siyuan-code-preset-mac .markdown-source-view.mod-cm6 .siyuan-code-header::before {
+  content: "";
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 12px;
+  height: 12px;
+  background: var(--siyuan-code-mac-dot-close);
+  border-radius: 50%;
+  box-shadow:
+    16px 0 0 var(--siyuan-code-mac-dot-minimize),
+    32px 0 0 var(--siyuan-code-mac-dot-maximize);
+}
+.siyuan-code-preset-mac .markdown-source-view.mod-cm6 .siyuan-code-header .siyuan-code-lang {
+  margin-left: 52px;
+}
+.siyuan-code-preset-mac .markdown-source-view.mod-cm6 .HyperMD-codeblock {
+  background: var(--siyuan-code-mac-bg) !important;
+  border: none !important;
+  padding-left: 20px !important;
+}
+.siyuan-code-preset-mac .markdown-source-view.mod-cm6 .HyperMD-codeblock-begin,
+.siyuan-code-preset-mac .markdown-source-view.mod-cm6 .HyperMD-codeblock-end {
+  background: var(--siyuan-code-mac-bg) !important;
+  border: none !important;
+}
+.siyuan-code-preset-mac .markdown-source-view.mod-cm6 .HyperMD-codeblock-end {
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* --- Mac: Reading view --- */
+.siyuan-code-preset-mac .markdown-rendered pre {
+  background: var(--siyuan-code-mac-bg) !important;
+  border: none !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  outline: none !important;
+}
+.siyuan-code-preset-mac .markdown-rendered pre > code {
+  outline: none !important;
+  padding: 10px 20px 14px 20px !important;
+}
+.siyuan-code-preset-mac .markdown-rendered pre > .siyuan-code-header-read {
+  background: var(--siyuan-code-mac-header-bg) !important;
+  border: none !important;
+  border-radius: 12px 12px 0 0;
+  height: 36px;
+  padding-left: 16px !important;
+  position: relative;
+}
+.siyuan-code-preset-mac .markdown-rendered pre > .siyuan-code-header-read::before {
+  content: "";
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 12px;
+  height: 12px;
+  background: var(--siyuan-code-mac-dot-close);
+  border-radius: 50%;
+  box-shadow:
+    16px 0 0 var(--siyuan-code-mac-dot-minimize),
+    32px 0 0 var(--siyuan-code-mac-dot-maximize);
+}
+.siyuan-code-preset-mac .markdown-rendered pre > .siyuan-code-header-read .siyuan-code-lang {
+  margin-left: 52px;
+}
+
+/* ============================================================
+   PRESET: Zhihu — .siyuan-code-preset-zhihu
+   Clean, minimal style inspired by Zhihu code blocks.
+   ============================================================ */
+
+/* --- Zhihu: CSS variables --- */
+.siyuan-code-preset-zhihu {
+  --siyuan-code-zhihu-bg: #f6f6f6;
+  --siyuan-code-zhihu-header-bg: #f0f0f0;
+  --siyuan-code-zhihu-border: #e3e3e3;
+}
+
+/* --- Zhihu: Editing view --- */
+.siyuan-code-preset-zhihu .markdown-source-view.mod-cm6 .siyuan-code-header {
+  background: var(--siyuan-code-zhihu-header-bg) !important;
+  border: none !important;
+  border-bottom: 1px solid var(--siyuan-code-zhihu-border);
+  border-radius: 4px 4px 0 0;
+}
+.siyuan-code-preset-zhihu .markdown-source-view.mod-cm6 .HyperMD-codeblock {
+  background: var(--siyuan-code-zhihu-bg) !important;
+  border: none !important;
+  padding-left: 16px !important;
+}
+.siyuan-code-preset-zhihu .markdown-source-view.mod-cm6 .HyperMD-codeblock-begin,
+.siyuan-code-preset-zhihu .markdown-source-view.mod-cm6 .HyperMD-codeblock-end {
+  background: var(--siyuan-code-zhihu-bg) !important;
+  border: none !important;
+}
+.siyuan-code-preset-zhihu .markdown-source-view.mod-cm6 .HyperMD-codeblock-end {
+  border-radius: 0 0 4px 4px;
+}
+
+/* --- Zhihu: Reading view --- */
+.siyuan-code-preset-zhihu .markdown-rendered pre {
+  background: var(--siyuan-code-zhihu-bg) !important;
+  border: none !important;
+  border-radius: 4px !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+.siyuan-code-preset-zhihu .markdown-rendered pre > code {
+  outline: none !important;
+  padding: 10px 16px 14px 16px !important;
+}
+.siyuan-code-preset-zhihu .markdown-rendered pre > .siyuan-code-header-read {
+  background: var(--siyuan-code-zhihu-header-bg) !important;
+  border: none !important;
+  border-bottom: 1px solid var(--siyuan-code-zhihu-border);
+  border-radius: 4px 4px 0 0;
+}
+
+/* ============================================================
+   PRESET: GitHub — .siyuan-code-preset-github
+   GitHub-style code block with dark header and sharp corners.
+   ============================================================ */
+
+/* --- GitHub: CSS variables --- */
+.siyuan-code-preset-github {
+  --siyuan-code-gh-bg: #0d1117;
+  --siyuan-code-gh-header-bg: #161b22;
+  --siyuan-code-gh-border: #30363d;
+}
+
+/* --- GitHub: Editing view --- */
+.siyuan-code-preset-github .markdown-source-view.mod-cm6 .siyuan-code-header {
+  background: var(--siyuan-code-gh-header-bg) !important;
+  border: 1px solid var(--siyuan-code-gh-border) !important;
   border-bottom: none !important;
+  border-radius: 0;
+}
+.siyuan-code-preset-github .markdown-source-view.mod-cm6 .HyperMD-codeblock {
+  background: var(--siyuan-code-gh-bg) !important;
+  border-left: 1px solid var(--siyuan-code-gh-border) !important;
+  border-right: 1px solid var(--siyuan-code-gh-border) !important;
+  padding-left: 16px !important;
+}
+.siyuan-code-preset-github .markdown-source-view.mod-cm6 .HyperMD-codeblock-begin {
+  border-left: none !important;
+  border-right: none !important;
+}
+.siyuan-code-preset-github .markdown-source-view.mod-cm6 .HyperMD-codeblock-end {
+  background: var(--siyuan-code-gh-bg) !important;
+  border-left: 1px solid var(--siyuan-code-gh-border) !important;
+  border-right: 1px solid var(--siyuan-code-gh-border) !important;
+  border-bottom: 1px solid var(--siyuan-code-gh-border) !important;
+  border-radius: 0;
+}
+
+/* --- GitHub: Reading view --- */
+.siyuan-code-preset-github .markdown-rendered pre {
+  background: var(--siyuan-code-gh-bg) !important;
+  border: 1px solid var(--siyuan-code-gh-border) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+.siyuan-code-preset-github .markdown-rendered pre > code {
+  outline: none !important;
+  padding: 10px 16px 14px 16px !important;
+}
+.siyuan-code-preset-github .markdown-rendered pre > .siyuan-code-header-read {
+  background: var(--siyuan-code-gh-header-bg) !important;
+  border: none !important;
+  border-bottom: 1px solid var(--siyuan-code-gh-border);
+}
+
+/* ============================================================
+   PRESET: VS Code Dark — .siyuan-code-preset-vscode
+   VS Code dark theme inspired code block with subtle header.
+   ============================================================ */
+
+/* --- VS Code: CSS variables --- */
+.siyuan-code-preset-vscode {
+  --siyuan-code-vscode-bg: #1e1e1e;
+  --siyuan-code-vscode-header-bg: #2d2d2d;
+  --siyuan-code-vscode-border: #3c3c3c;
+  --siyuan-code-vscode-accent: #007acc;
+}
+
+/* --- VS Code: Editing view --- */
+.siyuan-code-preset-vscode .markdown-source-view.mod-cm6 .siyuan-code-header {
+  background: var(--siyuan-code-vscode-header-bg) !important;
+  border: none !important;
+  border-bottom: 1px solid var(--siyuan-code-vscode-border);
+  border-radius: 6px 6px 0 0;
+  height: 34px;
+  padding-left: 16px !important;
+}
+.siyuan-code-preset-vscode .markdown-source-view.mod-cm6 .siyuan-code-header .siyuan-code-lang {
+  color: #cccccc;
+  font-size: 12px;
+}
+.siyuan-code-preset-vscode .markdown-source-view.mod-cm6 .HyperMD-codeblock {
+  background: var(--siyuan-code-vscode-bg) !important;
+  border: none !important;
+  padding-left: 20px !important;
+  color: #d4d4d4;
+}
+.siyuan-code-preset-vscode .markdown-source-view.mod-cm6 .HyperMD-codeblock-begin,
+.siyuan-code-preset-vscode .markdown-source-view.mod-cm6 .HyperMD-codeblock-end {
+  background: var(--siyuan-code-vscode-bg) !important;
+  border: none !important;
+}
+.siyuan-code-preset-vscode .markdown-source-view.mod-cm6 .HyperMD-codeblock-end {
+  border-radius: 0 0 6px 6px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* --- VS Code: Reading view --- */
+.siyuan-code-preset-vscode .markdown-rendered pre {
+  background: var(--siyuan-code-vscode-bg) !important;
+  border: none !important;
+  border-radius: 6px !important;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2) !important;
+  outline: none !important;
+}
+.siyuan-code-preset-vscode .markdown-rendered pre > code {
+  outline: none !important;
+  padding: 10px 20px 14px 20px !important;
+  color: #d4d4d4;
+}
+.siyuan-code-preset-vscode .markdown-rendered pre > .siyuan-code-header-read {
+  background: var(--siyuan-code-vscode-header-bg) !important;
+  border: none !important;
+  border-bottom: 1px solid var(--siyuan-code-vscode-border);
+  border-radius: 6px 6px 0 0;
+  height: 34px;
+  padding-left: 16px !important;
+}
+.siyuan-code-preset-vscode .markdown-rendered pre > .siyuan-code-header-read .siyuan-code-lang {
+  color: #cccccc;
+}
+
+/* ============================================================
+   PRESET: Notion — .siyuan-code-preset-notion
+   Clean Notion-style code block with light background.
+   ============================================================ */
+
+/* --- Notion: CSS variables --- */
+.siyuan-code-preset-notion {
+  --siyuan-code-notion-bg: #f7f6f3;
+  --siyuan-code-notion-header-bg: #ebebea;
+  --siyuan-code-notion-border: #e3e2df;
+}
+
+/* --- Notion: Editing view --- */
+.siyuan-code-preset-notion .markdown-source-view.mod-cm6 .siyuan-code-header {
+  background: var(--siyuan-code-notion-header-bg) !important;
+  border: none !important;
+  border-bottom: 1px solid var(--siyuan-code-notion-border);
+  border-radius: 4px 4px 0 0;
+  height: 34px;
+  padding-left: 14px !important;
+}
+.siyuan-code-preset-notion .markdown-source-view.mod-cm6 .siyuan-code-header .siyuan-code-lang {
+  color: #9b9a97;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.siyuan-code-preset-notion .markdown-source-view.mod-cm6 .HyperMD-codeblock {
+  background: var(--siyuan-code-notion-bg) !important;
+  border: none !important;
+  padding-left: 14px !important;
+}
+.siyuan-code-preset-notion .markdown-source-view.mod-cm6 .HyperMD-codeblock-begin,
+.siyuan-code-preset-notion .markdown-source-view.mod-cm6 .HyperMD-codeblock-end {
+  background: var(--siyuan-code-notion-bg) !important;
+  border: none !important;
+}
+.siyuan-code-preset-notion .markdown-source-view.mod-cm6 .HyperMD-codeblock-end {
+  border-radius: 0 0 4px 4px;
+}
+
+/* --- Notion: Reading view --- */
+.siyuan-code-preset-notion .markdown-rendered pre {
+  background: var(--siyuan-code-notion-bg) !important;
+  border: none !important;
+  border-radius: 4px !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+.siyuan-code-preset-notion .markdown-rendered pre > code {
+  outline: none !important;
+  padding: 10px 14px 14px 14px !important;
+}
+.siyuan-code-preset-notion .markdown-rendered pre > .siyuan-code-header-read {
+  background: var(--siyuan-code-notion-header-bg) !important;
+  border: none !important;
+  border-bottom: 1px solid var(--siyuan-code-notion-border);
+  border-radius: 4px 4px 0 0;
+  height: 34px;
+  padding-left: 14px !important;
+}
+.siyuan-code-preset-notion .markdown-rendered pre > .siyuan-code-header-read .siyuan-code-lang {
+  color: #9b9a97;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ============================================================
+   PRESET: Dracula — .siyuan-code-preset-dracula
+   Dracula theme inspired code block with purple accents.
+   ============================================================ */
+
+/* --- Dracula: CSS variables --- */
+.siyuan-code-preset-dracula {
+  --siyuan-code-dracula-bg: #282a36;
+  --siyuan-code-dracula-header-bg: #343746;
+  --siyuan-code-dracula-border: #44475a;
+  --siyuan-code-dracula-accent: #bd93f9;
+}
+
+/* --- Dracula: Editing view --- */
+.siyuan-code-preset-dracula .markdown-source-view.mod-cm6 .siyuan-code-header {
+  background: var(--siyuan-code-dracula-header-bg) !important;
+  border: none !important;
+  border-bottom: 1px solid var(--siyuan-code-dracula-border);
+  border-radius: 8px 8px 0 0;
+  height: 34px;
+  padding-left: 16px !important;
+}
+.siyuan-code-preset-dracula .markdown-source-view.mod-cm6 .siyuan-code-header .siyuan-code-lang {
+  color: var(--siyuan-code-dracula-accent);
+  font-size: 12px;
+}
+.siyuan-code-preset-dracula .markdown-source-view.mod-cm6 .HyperMD-codeblock {
+  background: var(--siyuan-code-dracula-bg) !important;
+  border: none !important;
+  padding-left: 20px !important;
+  color: #f8f8f2;
+}
+.siyuan-code-preset-dracula .markdown-source-view.mod-cm6 .HyperMD-codeblock-begin,
+.siyuan-code-preset-dracula .markdown-source-view.mod-cm6 .HyperMD-codeblock-end {
+  background: var(--siyuan-code-dracula-bg) !important;
+  border: none !important;
+}
+.siyuan-code-preset-dracula .markdown-source-view.mod-cm6 .HyperMD-codeblock-end {
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 4px 12px rgba(189, 147, 249, 0.08);
+}
+
+/* --- Dracula: Reading view --- */
+.siyuan-code-preset-dracula .markdown-rendered pre {
+  background: var(--siyuan-code-dracula-bg) !important;
+  border: none !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(189, 147, 249, 0.08) !important;
+  outline: none !important;
+}
+.siyuan-code-preset-dracula .markdown-rendered pre > code {
+  outline: none !important;
+  padding: 10px 20px 14px 20px !important;
+  color: #f8f8f2;
+}
+.siyuan-code-preset-dracula .markdown-rendered pre > .siyuan-code-header-read {
+  background: var(--siyuan-code-dracula-header-bg) !important;
+  border: none !important;
+  border-bottom: 1px solid var(--siyuan-code-dracula-border);
+  border-radius: 8px 8px 0 0;
+  height: 34px;
+  padding-left: 16px !important;
+}
+.siyuan-code-preset-dracula .markdown-rendered pre > .siyuan-code-header-read .siyuan-code-lang {
+  color: var(--siyuan-code-dracula-accent);
+}
+
+/* ============================================================
+   PRESET: Custom Borders — .siyuan-code-preset-custom
+   Uses Obsidian's native colors but adds borders and structure.
+   Adapts to the current theme (light/dark).
+   ============================================================ */
+
+/* --- Custom: Editing view --- */
+.siyuan-code-preset-custom .markdown-source-view.mod-cm6 .siyuan-code-header {
+  background: var(--siyuan-code-surface) !important;
+  border: 1px solid var(--background-modifier-border);
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+}
+.siyuan-code-preset-custom .markdown-source-view.mod-cm6 .HyperMD-codeblock {
+  background: var(--siyuan-code-surface) !important;
+  border-left: 1px solid var(--background-modifier-border);
+  border-right: 1px solid var(--background-modifier-border);
+}
+.siyuan-code-preset-custom .markdown-source-view.mod-cm6 .HyperMD-codeblock-begin {
+  border-left: none !important;
+  border-right: none !important;
+}
+.siyuan-code-preset-custom .markdown-source-view.mod-cm6 .HyperMD-codeblock-end {
+  background: var(--siyuan-code-surface) !important;
+  border-left: 1px solid var(--background-modifier-border);
+  border-right: 1px solid var(--background-modifier-border);
+  border-bottom: 1px solid var(--background-modifier-border);
+  border-radius: 0 0 6px 6px;
+}
+.siyuan-code-preset-custom .markdown-source-view.mod-cm6 .HyperMD-codeblock-begin,
+.siyuan-code-preset-custom .markdown-source-view.mod-cm6 .HyperMD-codeblock-end {
+  background: var(--siyuan-code-surface) !important;
+}
+
+/* --- Custom: Reading view --- */
+.siyuan-code-preset-custom .markdown-rendered pre {
+  background: var(--siyuan-code-surface) !important;
+  border-left: 1px solid var(--background-modifier-border) !important;
+  border-right: 1px solid var(--background-modifier-border) !important;
+  border-bottom: 1px solid var(--background-modifier-border) !important;
+  border-top: none !important;
+  border-radius: 6px !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+.siyuan-code-preset-custom .markdown-rendered pre > code {
+  outline: none !important;
+}
+.siyuan-code-preset-custom .markdown-rendered pre > .siyuan-code-header-read {
+  background: var(--siyuan-code-surface) !important;
+  border-top: 1px solid var(--background-modifier-border);
+  border-radius: 6px 6px 0 0;
 }

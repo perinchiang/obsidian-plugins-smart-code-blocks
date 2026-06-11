@@ -11,13 +11,17 @@ const DEFAULT_SETTINGS = {
   customBgColor: false,
   customRadius: false,
   customPadding: false,
-  hideHeaderSeparator: false,
+  showHeaderSeparator: false,
+  codeBlockPreset: "none",
   codeBlockRadius: 10,
   codeBlockPaddingLeft: 20,
+  codeBlockPaddingRight: 20,
   copyButtonOnHover: true,
   chineseFenceTrigger: true,
   allowCustomLanguage: true,
   customLanguages: [],
+  jumpUpHotkey: "Mod-Shift-b",
+  jumpDownHotkey: "Mod-Shift-a",
   language: "zh",
 };
 
@@ -36,12 +40,24 @@ const i18n = {
       customRadiusDesc: "开启后可调整代码块圆角大小",
       customPadding: "自定义间距",
       customPaddingDesc: "开启后可调整代码内容左侧内边距",
-      hideHeaderSeparator: "消除标题分隔线",
-      hideHeaderSeparatorDesc: "隐藏语言栏与代码内容之间的分隔线",
+      showHeaderSeparator: "显示标题分隔线",
+      showHeaderSeparatorDesc: "在语言栏与代码内容之间显示分隔线",
+      codeBlockPreset: "代码块风格预设",
+      codeBlockPresetDesc: "选择预设风格（会覆盖部分自定义外观设置）",
+      presetNone: "默认",
+      presetMac: "Mac 红绿灯（夜间）",
+      presetZhihu: "知乎（日间）",
+      presetGithub: "GitHub（夜间）",
+      presetVscode: "VS Code 暗色（夜间）",
+      presetNotion: "Notion（日间）",
+      presetDracula: "Dracula（夜间）",
+      presetCustom: "自定义边框（日间）",
       radius: "代码块圆角 (px)",
       radiusDesc: "控制代码块的圆角大小，默认 10px",
       paddingLeft: "代码内容左侧内边距 (px)",
       paddingLeftDesc: "代码文字与左边框的距离，默认 20px",
+      paddingRight: "代码内容右侧内边距 (px)",
+      paddingRightDesc: "代码文字与右边框的距离，默认 20px",
       behavior: "行为设置",
       copyOnHover: "悬停显示控件",
       copyOnHoverDesc: "仅在鼠标悬停代码块时显示语言标签和复制按钮，移开后自动隐藏",
@@ -54,6 +70,11 @@ const i18n = {
       customLanguageAddDesc: "输入语言名称后点击添加",
       customLanguageEmpty: "暂无自定义语言",
       customLanguageDelete: "删除",
+      jumpUpHotkey: "跳出代码块（上方）快捷键",
+      jumpUpHotkeyDesc: "在代码块内按下此快捷键，光标跳到代码块上方一行",
+      jumpDownHotkey: "跳出代码块（下方）快捷键",
+      jumpDownHotkeyDesc: "在代码块内按下此快捷键，光标跳到代码块下方一行",
+      hotkeyHint: "格式示例：Mod-Shift-b（Mod 代表 Ctrl/Cmd）",
       language: "界面语言",
       languageDesc: "切换插件界面语言（设置面板、提示等）",
     },
@@ -75,6 +96,7 @@ const i18n = {
         "输入 ··· 或 ···python 后按回车可快速创建代码块",
         "悬停代码块时显示控件，移开后自动隐藏",
         "空代码块中按 Backspace 可删除整个代码块",
+        "按 Ctrl/Cmd+Shift+B 跳到代码块上方，Ctrl/Cmd+Shift+A 跳到代码块下方（可在设置中自定义）",
       ],
     },
   },
@@ -89,12 +111,24 @@ const i18n = {
       customRadiusDesc: "Enable to adjust code block border radius",
       customPadding: "Custom padding",
       customPaddingDesc: "Enable to adjust left padding of code content",
-      hideHeaderSeparator: "Hide header separator",
-      hideHeaderSeparatorDesc: "Hide the separator line between the language bar and code content",
+      showHeaderSeparator: "Show header separator",
+      showHeaderSeparatorDesc: "Show a separator line between the language bar and code content",
+      codeBlockPreset: "Code block style preset",
+      codeBlockPresetDesc: "Choose a preset style (overrides some custom appearance settings)",
+      presetNone: "Default",
+      presetMac: "Mac Traffic Lights (Dark)",
+      presetZhihu: "Zhihu (Light)",
+      presetGithub: "GitHub (Dark)",
+      presetVscode: "VS Code Dark (Dark)",
+      presetNotion: "Notion (Light)",
+      presetDracula: "Dracula (Dark)",
+      presetCustom: "Custom Borders (Light)",
       radius: "Code block radius (px)",
       radiusDesc: "Controls the border radius of code blocks, default 10px",
       paddingLeft: "Left padding of code content (px)",
       paddingLeftDesc: "Distance between code text and left border, default 20px",
+      paddingRight: "Right padding of code content (px)",
+      paddingRightDesc: "Distance between code text and right border, default 20px",
       behavior: "Behavior",
       copyOnHover: "Show controls on hover",
       copyOnHoverDesc: "Only show the language pill and copy button when hovering over the code block",
@@ -107,6 +141,11 @@ const i18n = {
       customLanguageAddDesc: "Enter a language name and click add",
       customLanguageEmpty: "No custom languages yet",
       customLanguageDelete: "Delete",
+      jumpUpHotkey: "Jump out (above) hotkey",
+      jumpUpHotkeyDesc: "Press this hotkey inside a code block to jump above it",
+      jumpDownHotkey: "Jump out (below) hotkey",
+      jumpDownHotkeyDesc: "Press this hotkey inside a code block to jump below it",
+      hotkeyHint: "Format example: Mod-Shift-b (Mod = Ctrl/Cmd)",
       language: "Interface language",
       languageDesc: "Switch the plugin interface language",
     },
@@ -128,6 +167,7 @@ const i18n = {
         "Type ··· or ···python and press Enter to quickly create a code block",
         "Controls appear on hover and hide when cursor leaves",
         "Press Backspace in an empty code block to delete the entire block",
+        "Press Ctrl/Cmd+Shift+B to jump above the code block, Ctrl/Cmd+Shift+A to jump below (customizable in settings)",
       ],
     },
   },
@@ -460,6 +500,29 @@ class SiyuanSettingTab extends PluginSettingTab {
     containerEl.createEl("h3", { text: t.settings.appearance });
 
     new Setting(containerEl)
+      .setName(t.settings.codeBlockPreset)
+      .setDesc(t.settings.codeBlockPresetDesc)
+      .addDropdown((dropdown) =>
+        dropdown
+          .addOptions({
+            none: t.settings.presetNone,
+            mac: t.settings.presetMac,
+            zhihu: t.settings.presetZhihu,
+            github: t.settings.presetGithub,
+            vscode: t.settings.presetVscode,
+            notion: t.settings.presetNotion,
+            dracula: t.settings.presetDracula,
+            custom: t.settings.presetCustom,
+          })
+          .setValue(this.plugin.settings.codeBlockPreset)
+          .onChange(async (value) => {
+            this.plugin.settings.codeBlockPreset = value;
+            this.plugin.applySettings();
+            await this.plugin.saveSettings();
+          })
+      );
+
+    new Setting(containerEl)
       .setName(t.settings.customBgColor)
       .setDesc(t.settings.customBgColorDesc)
       .addToggle((toggle) =>
@@ -533,16 +596,31 @@ class SiyuanSettingTab extends PluginSettingTab {
               await this.plugin.saveSettings();
             })
         );
+
+      new Setting(containerEl)
+        .setName(t.settings.paddingRight)
+        .setDesc(t.settings.paddingRightDesc)
+        .addSlider((slider) =>
+          slider
+            .setLimits(8, 40, 1)
+            .setValue(this.plugin.settings.codeBlockPaddingRight)
+            .setDynamicTooltip()
+            .onChange(async (value) => {
+              this.plugin.settings.codeBlockPaddingRight = value;
+              this.plugin.applySettings();
+              await this.plugin.saveSettings();
+            })
+        );
     }
 
     new Setting(containerEl)
-      .setName(t.settings.hideHeaderSeparator)
-      .setDesc(t.settings.hideHeaderSeparatorDesc)
+      .setName(t.settings.showHeaderSeparator)
+      .setDesc(t.settings.showHeaderSeparatorDesc)
       .addToggle((toggle) =>
         toggle
-          .setValue(this.plugin.settings.hideHeaderSeparator)
+          .setValue(this.plugin.settings.showHeaderSeparator)
           .onChange(async (value) => {
-            this.plugin.settings.hideHeaderSeparator = value;
+            this.plugin.settings.showHeaderSeparator = value;
             this.plugin.applySettings();
             await this.plugin.saveSettings();
           })
@@ -572,6 +650,34 @@ class SiyuanSettingTab extends PluginSettingTab {
           .setValue(this.plugin.settings.chineseFenceTrigger)
           .onChange(async (value) => {
             this.plugin.settings.chineseFenceTrigger = value;
+            await this.plugin.saveSettings();
+          })
+      );
+
+    new Setting(containerEl)
+      .setName(t.settings.jumpUpHotkey)
+      .setDesc(t.settings.jumpUpHotkeyDesc + " " + t.settings.hotkeyHint)
+      .addText((text) =>
+        text
+          .setPlaceholder("Mod-Shift-b")
+          .setValue(this.plugin.settings.jumpUpHotkey)
+          .onChange(async (value) => {
+            this.plugin.settings.jumpUpHotkey = value.trim() || "Mod-Shift-b";
+            this.plugin.applySettings();
+            await this.plugin.saveSettings();
+          })
+      );
+
+    new Setting(containerEl)
+      .setName(t.settings.jumpDownHotkey)
+      .setDesc(t.settings.jumpDownHotkeyDesc + " " + t.settings.hotkeyHint)
+      .addText((text) =>
+        text
+          .setPlaceholder("Mod-Shift-a")
+          .setValue(this.plugin.settings.jumpDownHotkey)
+          .onChange(async (value) => {
+            this.plugin.settings.jumpDownHotkey = value.trim() || "Mod-Shift-a";
+            this.plugin.applySettings();
             await this.plugin.saveSettings();
           })
       );
@@ -758,6 +864,85 @@ module.exports = class SiyuanCodeBlocks extends Plugin {
       return true;
     };
 
+    /* ---- Jump out of code block: configurable hotkeys ---- */
+    const jumpOutOfCodeBlockUp = (view) => {
+      const state = view.state;
+      const sel = state.selection.main;
+      const lineNo = state.doc.lineAt(sel.head).number;
+      const blocks = parseFences(state.doc);
+      const b = blocks.find((b) => lineNo >= b.beginLineNo && lineNo <= b.endLineNo);
+      if (!b) return false;
+      const targetLine = b.beginLineNo - 1;
+      if (targetLine < 1) {
+        view.dispatch({ selection: { anchor: 0 } });
+      } else {
+        const pos = state.doc.line(targetLine).to;
+        view.dispatch({ selection: { anchor: pos } });
+      }
+      return true;
+    };
+
+    const jumpOutOfCodeBlockDown = (view) => {
+      const state = view.state;
+      const sel = state.selection.main;
+      const lineNo = state.doc.lineAt(sel.head).number;
+      const blocks = parseFences(state.doc);
+      const b = blocks.find((b) => lineNo >= b.beginLineNo && lineNo <= b.endLineNo);
+      if (!b) return false;
+      const targetLine = b.endLineNo + 1;
+      if (targetLine > state.doc.lines) {
+        view.dispatch({ selection: { anchor: state.doc.length } });
+      } else {
+        const pos = state.doc.line(targetLine).from;
+        view.dispatch({ selection: { anchor: pos } });
+      }
+      return true;
+    };
+
+    /* Parse a CM6 key string like "Mod-Shift-a" into a matcher function */
+    const parseKeyBinding = (keyStr) => {
+      const parts = keyStr.toLowerCase().split("-");
+      const key = parts[parts.length - 1];
+      const hasMod = parts.includes("mod");
+      const hasShift = parts.includes("shift");
+      const hasAlt = parts.includes("alt");
+      const hasCtrl = parts.includes("ctrl");
+      return (event) => {
+        if (event.key.toLowerCase() !== key) return false;
+        const modPressed = event.ctrlKey || event.metaKey;
+        if (hasMod && !modPressed) return false;
+        if (!hasMod && modPressed) return false;
+        if (hasShift && !event.shiftKey) return false;
+        if (!hasShift && event.shiftKey) return false;
+        if (hasAlt && !event.altKey) return false;
+        if (!hasAlt && event.altKey) return false;
+        if (hasCtrl && !event.ctrlKey) return false;
+        return true;
+      };
+    };
+
+    const jumpKeydown = EditorView.domEventHandlers({
+      keydown: (event, view) => {
+        const upMatcher = parseKeyBinding(plugin.settings.jumpUpHotkey);
+        const downMatcher = parseKeyBinding(plugin.settings.jumpDownHotkey);
+        if (upMatcher(event)) {
+          if (jumpOutOfCodeBlockUp(view)) {
+            event.preventDefault();
+            event.stopPropagation();
+            return true;
+          }
+        }
+        if (downMatcher(event)) {
+          if (jumpOutOfCodeBlockDown(view)) {
+            event.preventDefault();
+            event.stopPropagation();
+            return true;
+          }
+        }
+        return false;
+      },
+    });
+
     const isPlainWindowsCtrlA = (event) => {
       // Skip entirely on touch devices (no physical Ctrl key)
       if (isMobilePlatform()) return false;
@@ -787,6 +972,7 @@ module.exports = class SiyuanCodeBlocks extends Plugin {
       createFenceTrigger(plugin),
       createEnsureEmptyLine(),
       Prec.highest(smartSelectAllKeydown),
+      Prec.highest(jumpKeydown),
       Prec.highest(keymap.of([
         { key: "Mod-a", run: selectCurrentCodeBlockBody },
         { key: "Backspace", run: deleteEmptyBlock },
@@ -885,12 +1071,20 @@ module.exports = class SiyuanCodeBlocks extends Plugin {
   onunload() {
     document.documentElement.style.removeProperty("--siyuan-code-radius");
     document.documentElement.style.removeProperty("--siyuan-code-padding-left");
+    document.documentElement.style.removeProperty("--siyuan-code-padding-right");
     document.body.classList.remove("siyuan-code-show-copy");
     document.body.classList.remove("siyuan-code-is-mobile");
     document.body.classList.remove("siyuan-code-custom-bg");
     document.body.classList.remove("siyuan-code-custom-radius");
     document.body.classList.remove("siyuan-code-custom-padding");
-    document.body.classList.remove("siyuan-code-hide-header-separator");
+    document.body.classList.remove("siyuan-code-show-header-separator");
+    document.body.classList.remove("siyuan-code-preset-mac");
+    document.body.classList.remove("siyuan-code-preset-zhihu");
+    document.body.classList.remove("siyuan-code-preset-github");
+    document.body.classList.remove("siyuan-code-preset-vscode");
+    document.body.classList.remove("siyuan-code-preset-notion");
+    document.body.classList.remove("siyuan-code-preset-dracula");
+    document.body.classList.remove("siyuan-code-preset-custom");
     document.querySelectorAll(".siyuan-code-hover").forEach((el) => {
       el.classList.remove("siyuan-code-hover");
     });
@@ -913,6 +1107,10 @@ module.exports = class SiyuanCodeBlocks extends Plugin {
       "--siyuan-code-padding-left",
       this.settings.codeBlockPaddingLeft + "px"
     );
+    document.documentElement.style.setProperty(
+      "--siyuan-code-padding-right",
+      this.settings.codeBlockPaddingRight + "px"
+    );
     // Toggle custom style body classes
     document.body.classList.toggle(
       "siyuan-code-custom-bg",
@@ -927,8 +1125,36 @@ module.exports = class SiyuanCodeBlocks extends Plugin {
       this.settings.customPadding
     );
     document.body.classList.toggle(
-      "siyuan-code-hide-header-separator",
-      this.settings.hideHeaderSeparator
+      "siyuan-code-show-header-separator",
+      this.settings.showHeaderSeparator
+    );
+    document.body.classList.toggle(
+      "siyuan-code-preset-mac",
+      this.settings.codeBlockPreset === "mac"
+    );
+    document.body.classList.toggle(
+      "siyuan-code-preset-zhihu",
+      this.settings.codeBlockPreset === "zhihu"
+    );
+    document.body.classList.toggle(
+      "siyuan-code-preset-github",
+      this.settings.codeBlockPreset === "github"
+    );
+    document.body.classList.toggle(
+      "siyuan-code-preset-vscode",
+      this.settings.codeBlockPreset === "vscode"
+    );
+    document.body.classList.toggle(
+      "siyuan-code-preset-notion",
+      this.settings.codeBlockPreset === "notion"
+    );
+    document.body.classList.toggle(
+      "siyuan-code-preset-dracula",
+      this.settings.codeBlockPreset === "dracula"
+    );
+    document.body.classList.toggle(
+      "siyuan-code-preset-custom",
+      this.settings.codeBlockPreset === "custom"
     );
     // Always show copy button on mobile (no cursor hover)
     const mobile = isMobilePlatform();
